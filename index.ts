@@ -37,19 +37,14 @@ export const buchta = (app: Elysia) => {
         for (const route of buchta.pages) {
             if (route.func) {
                 app.get(fixRoute(dirname(route.route)), async (ctx: any) => {
-                    // @ts-ignore always
-                    let path = new URL(ctx.request.url).pathname;
-
-                    return new Response(await route.func(dirname(route.route), path),
-                                        { headers: { "Content-Type": "text/html" }}
-                                        );
+                    ctx.set.headers["Content-Type"] = "text/html";
+                    return await route.func(dirname(route.route), fixRoute(dirname(route.route)));
                 });
             } else {
                 if (!buchta.config?.ssr && "html" in route) {
                     app.get(fixRoute(dirname(route.route)), (ctx: any) => {
-                        return new Response(route.html,
-                                           { headers: { "Content-Type": "text/html" }}
-                                          );
+                        ctx.set.headers["Content-Type"] = "text/html";
+                        return route.html;
                     });
                 }
                 if (!("html" in route)) {
