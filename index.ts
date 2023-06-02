@@ -36,15 +36,14 @@ export const buchta = (app: Elysia) => {
         // @ts-ignore I forgot this.pages 💀
         for (const route of buchta.pages) {
             if (route.func) {
-                app.get(fixRoute(dirname(route.route)), async (ctx: any) => {
-                    ctx.set.headers["Content-Type"] = "text/html";
-                    return await route.func(dirname(route.route), fixRoute(dirname(route.route)));
+                app.get(fixRoute(dirname(route.route)), async (_: any) => {
+                    return new Response(await route.func(dirname(route.route), fixRoute(dirname(route.route))),
+                                        { headers: { "Content-Type": "text/html" } });
                 });
             } else {
                 if (!buchta.config?.ssr && "html" in route) {
                     app.get(fixRoute(dirname(route.route)), (ctx: any) => {
-                        ctx.set.headers["Content-Type"] = "text/html";
-                        return route.html;
+                        return new Response(route.html, { headers: { "Content-Type": "text/html" } });
                     });
                 }
                 if (!("html" in route)) {
