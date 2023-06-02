@@ -25,7 +25,7 @@ const fixRoute = (route: string) => {
 }
 
 export const buchta = (app: Elysia) => {
-    const buchta = new Buchta(true);
+    const buchta = new Buchta();
     buchta.earlyHook = earlyHook;
 
     buchta.setup().then(function() {
